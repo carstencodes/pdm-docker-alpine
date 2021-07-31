@@ -31,10 +31,8 @@ jobs:
           context: .
           push: false
           tags: carstencodes/pdm-alpine:1.7.2-python3.8
-          build-args:
-            - PYTHON_VERSION: 3.8
-            - ALPINE_VERSION: 3.13
-            - PDM_VERSION: 1.7.2
+          build-args: |
+            PYTHON_VERSION=3.8, ALPINE_VERSION=3.13, PDM_VERSION=1.7.2
       -
         name: Build and push 3.9 / 3.14
         uses: docker/build-push-action@v2
@@ -42,7 +40,5 @@ jobs:
           context: .
           push: false
           tags: carstencodes/pdm-alpine:1.7.2-python3.9
-          build-args:
-            - PYTHON_VERSION: 3.9
-            - ALPINE_VERSION: 3.14
-            - PDM_VERSION: 1.7.2
+          build-args: |
+            PYTHON_VERSION=3.9, ALPINE_VERSION=3.14, PDM_VERSION=1.7.2
