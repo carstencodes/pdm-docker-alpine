@@ -6,7 +6,7 @@ on:
       - 'main'
 
 env:
-  USE_PDM_VERSION: 1.8.1
+  USE_PDM_VERSION: 1.8.2
 
 jobs:
   docker:
