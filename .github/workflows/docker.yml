@@ -5,8 +5,18 @@ on:
     branches:
       - 'main'
 
+env:
+  USE_PDM_VERSION: 1.8.1
+
 jobs:
   docker:
+    strategy:
+      matrix:
+        include:
+          - python: 3.8
+            alpine: 3.13
+          - python: 3.9
+            alpine: 3.14
     runs-on: ubuntu-latest
     steps:
       -
@@ -25,24 +35,13 @@ jobs:
           username: ${{ secrets.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
       -
-        name: Build and push 3.8 / 3.13
+        name: Build and push python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: carstencodes/pdm-alpine:1.8.1-python3.8
+          tags: carstencodes/pdm-alpine:$USE_PDM_VERSION-python${{ matrix.python }}
           build-args: |
-            PYTHON_VERSION=3.8
-            ALPINE_VERSION=3.13
-            PDM_VERSION=1.8.1
-      -
-        name: Build and push 3.9 / 3.14
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: carstencodes/pdm-alpine:1.8.1-python3.9
-          build-args: |
-            PYTHON_VERSION=3.9
-            ALPINE_VERSION=3.14
-            PDM_VERSION=1.8.1
+            PYTHON_VERSION=${{ matrix.python }}
+            ALPINE_VERSION=${{ matrix.alpine }}
+            PDM_VERSION=$USE_PDM_VERSION
