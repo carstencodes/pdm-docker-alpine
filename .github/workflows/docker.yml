@@ -12,10 +12,10 @@ jobs:
         include:
           - python: 3.8
             alpine: 3.13
-            pdm: 1.8.2
+            pdm: 1.8.3
           - python: 3.9
             alpine: 3.14
-            pdm: 1.8.2
+            pdm: 1.8.3
     runs-on: ubuntu-latest
     steps:
       -
