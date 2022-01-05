@@ -48,7 +48,7 @@ jobs:
       -
         name: Build base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
-        if: ${{steps.runs_on_main.outputs.is_main_branch}} == false
+        if: ! ${{steps.runs_on_main.outputs.is_main_branch}}
         with:
           context: .
           target: base
@@ -60,25 +60,25 @@ jobs:
       -
         name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
         uses: docker/build-push-action@v2
-        if: ${{steps.runs_on_main.outputs.is_main_branch}} == true
+        if: ${{steps.runs_on_main.outputs.is_main_branch}}
         with:
           context: .
           target: base
           push: true
-          tags: carstencodes/pdm-alpine:${{ matrix.pdm }}-python${{ matrix.python }}
+          tags: carstencodes/pdm-alpine:${{env.USED_PDM_VERSION}}-python${{ matrix.python }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
             PDM_VERSION=${{env.USED_PDM_VERSION}}
       -
-        name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{env.USED_GITLAB_CLI}}
+        name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{env.USED_GITLAB_CLI_VERSION}}
         uses: docker/build-push-action@v2
-        if: ${{steps.runs_on_main.outputs.is_main_branch}} == true        
+        if: ${{steps.runs_on_main.outputs.is_main_branch}}   
         with:
           context: .
           target: gitlab
           push: true
-          tags: carstencodes/pdm-alpine:${{ matrix.pdm }}-python${{ matrix.python }}-gitlab${{env.USED_GITLAB_CLI}}
+          tags: carstencodes/pdm-alpine:${{env.USED_PDM_VERSION}}-python${{ matrix.python }}-gitlab${{env.USED_GITLAB_CLI_VERSION}}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
