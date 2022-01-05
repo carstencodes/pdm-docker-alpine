@@ -41,7 +41,7 @@ jobs:
       -
         name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name != 'main' }}
         with:
           context: .
           push: false
