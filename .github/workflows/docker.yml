@@ -23,6 +23,13 @@ jobs:
             alpine: 3.14
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Check if on main branch
+        shell: bash
+        run: | 
+          [ "${GITHUB_REF#refs/heads/}" == "main" ] && echo "##[set-output name=is_main_branch;]$(echo true)" 
+          [ "${GITHUB_REF#refs/heads/}" != "main" ] && echo "##[set-output name=is_main_branch;]$(echo false)"
+        id: runs_on_main
       -
         name: Checkout
         uses: actions/checkout@v2
