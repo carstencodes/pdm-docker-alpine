@@ -5,6 +5,9 @@ on:
     branches:
       - 'main'
       - 'ci/test'
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   docker:
@@ -43,12 +46,25 @@ jobs:
           username: ${{ secrets.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
       -
-        name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
+        name: Build base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
+        if: ${{steps.runs_on_main.outputs.is_main_branch}} == false
         with:
           context: .
           target: base
-          push: ${{steps.runs_on_main.outputs.is_main_branch}}
+          push: false
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python }}
+            ALPINE_VERSION=${{ matrix.alpine }}
+            PDM_VERSION=$USED_PDM_VERSION
+      -
+        name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
+        uses: docker/build-push-action@v2
+        if: ${{steps.runs_on_main.outputs.is_main_branch}} == true
+        with:
+          context: .
+          target: base
+          push: true
           tags: carstencodes/pdm-alpine:${{ matrix.pdm }}-python${{ matrix.python }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
