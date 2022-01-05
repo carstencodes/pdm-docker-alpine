@@ -24,10 +24,6 @@ RUN apk add --no-cache --virtual .build-deps alpine-sdk python3-dev libffi-dev o
 
 WORKDIR /app
 
-ONBUILD COPY pyproject.toml pyproject.toml
-ONBUILD COPY pdm.lock pdm.lock
-ONBUILD RUN pdm sync
-
 CMD ["pdm"] 
 
 FROM base
