@@ -4,18 +4,23 @@ on:
   push:
     branches:
       - 'main'
+      - 'ci/test'
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   docker:
+    env:
+      USED_PDM_VERSION: 1.12.1
+      USED_GITLAB_CLI_VERSION: 2.10.1
     strategy:
       matrix:
         include:
           - python: 3.8
             alpine: 3.13
-            pdm: 1.12.1
           - python: 3.9
             alpine: 3.14
-            pdm: 1.12.1
     runs-on: ubuntu-latest
     steps:
       -
@@ -34,13 +39,40 @@ jobs:
           username: ${{ secrets.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
       -
-        name: Build and push python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
+        name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: true
-          tags: carstencodes/pdm-alpine:${{ matrix.pdm }}-python${{ matrix.python }}
+          push: false
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
-            PDM_VERSION=${{ matrix.pdm }}
+            PDM_VERSION=${{env.USED_PDM_VERSION}}
+            GITLAB_CLI_VERSION=${{env.USED_GITLAB_CLI_VERSION}}
+      -
+        name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
+        uses: docker/build-push-action@v2
+        if: ${{ github.ref_name == 'main' }}
+        with:
+          context: .
+          target: base
+          push: true
+          tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python }}
+            ALPINE_VERSION=${{ matrix.alpine }}
+            PDM_VERSION=${{ env.USED_PDM_VERSION }}
+      -
+        name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{ env.USED_GITLAB_CLI_VERSION }}
+        uses: docker/build-push-action@v2
+        if: ${{ github.ref_name == 'main' }}   
+        with:
+          context: .
+          target: gitlab
+          push: true
+          tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}-gitlab${{ env.USED_GITLAB_CLI_VERSION }}
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python }}
+            ALPINE_VERSION=${{ matrix.alpine }}
+            PDM_VERSION=${{ env.USED_PDM_VERSION }}
+            GITLAB_CLI_VERSION=${{ env.USED_GITLAB_CLI_VERSION }}

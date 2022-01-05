@@ -11,7 +11,7 @@
 ARG PYTHON_VERSION
 ARG ALPINE_VERSION
 
-FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}
+FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION} AS base
 
 ARG PDM_VERSION
 
@@ -24,8 +24,10 @@ RUN apk add --no-cache --virtual .build-deps alpine-sdk python3-dev libffi-dev o
 
 WORKDIR /app
 
-ONBUILD COPY pyproject.toml pyproject.toml
-ONBUILD COPY pdm.lock pdm.lock
-ONBUILD RUN pdm sync
-
 CMD ["pdm"] 
+
+FROM base as gitlab
+
+ARG GITLAB_CLI_VERSION
+
+RUN pip install --no-input --no-cache-dir --upgrade python-gitlab==${GITLAB_CLI_VERSION}
