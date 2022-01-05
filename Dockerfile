@@ -11,7 +11,7 @@
 ARG PYTHON_VERSION
 ARG ALPINE_VERSION
 
-FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}
+FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION} AS base
 
 ARG PDM_VERSION
 
@@ -29,3 +29,9 @@ ONBUILD COPY pdm.lock pdm.lock
 ONBUILD RUN pdm sync
 
 CMD ["pdm"] 
+
+FROM base
+
+ARG USED_GITLAB_CLI_VERSION
+
+RUN pip install --no-input --no-cache-dir --upgrade gitlab==${USED_GITLAB_CLI_VERSION}
