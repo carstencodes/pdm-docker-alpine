@@ -48,6 +48,10 @@ jobs:
       -
         name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
+<<<<<<< HEAD
+=======
+        if: ! ${{steps.runs_on_main.outputs.is_main_branch}}
+>>>>>>> Update on conditions
         with:
           context: .
           push: false
@@ -59,25 +63,43 @@ jobs:
       -
         name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
         uses: docker/build-push-action@v2
+<<<<<<< HEAD
         if: ${{ github.ref_name == 'main' }}
+=======
+        if: ${{steps.runs_on_main.outputs.is_main_branch}}
+>>>>>>> Update on conditions
         with:
           context: .
           target: base
           push: true
+<<<<<<< HEAD
           tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}
+=======
+          tags: carstencodes/pdm-alpine:${{env.USED_PDM_VERSION}}-python${{ matrix.python }}
+>>>>>>> Update on conditions
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
             PDM_VERSION=${{ env.USED_PDM_VERSION }}
       -
+<<<<<<< HEAD
         name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{ env.USED_GITLAB_CLI_VERSION }}
         uses: docker/build-push-action@v2
         if: ${{ github.ref_name == 'main' }}   
+=======
+        name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{env.USED_GITLAB_CLI_VERSION}}
+        uses: docker/build-push-action@v2
+        if: ${{steps.runs_on_main.outputs.is_main_branch}}   
+>>>>>>> Update on conditions
         with:
           context: .
           target: gitlab
           push: true
+<<<<<<< HEAD
           tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}-gitlab${{ env.USED_GITLAB_CLI_VERSION }}
+=======
+          tags: carstencodes/pdm-alpine:${{env.USED_PDM_VERSION}}-python${{ matrix.python }}-gitlab${{env.USED_GITLAB_CLI_VERSION}}
+>>>>>>> Update on conditions
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
