@@ -57,22 +57,22 @@ jobs:
           context: .
           target: base
           push: true
-          tags: carstencodes/pdm-alpine:${{env.USED_PDM_VERSION}}-python${{ matrix.python }}
+          tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
-            PDM_VERSION=${{env.USED_PDM_VERSION}}
+            PDM_VERSION=${{ env.USED_PDM_VERSION }}
       -
-        name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{env.USED_GITLAB_CLI_VERSION}}
+        name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{ env.USED_GITLAB_CLI_VERSION }}
         uses: docker/build-push-action@v2
         if: ${{ github.ref_name == 'main' }}   
         with:
           context: .
           target: gitlab
           push: true
-          tags: carstencodes/pdm-alpine:${{env.USED_PDM_VERSION}}-python${{ matrix.python }}-gitlab${{env.USED_GITLAB_CLI_VERSION}}
+          tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}-gitlab${{ env.USED_GITLAB_CLI_VERSION }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
-            PDM_VERSION=${{env.USED_PDM_VERSION}}
-            GITLAB_CLI_VERSION=${{env.USED_GITLAB_CLI_VERSION}}
+            PDM_VERSION=${{ env.USED_PDM_VERSION }}
+            GITLAB_CLI_VERSION=${{ env.USED_GITLAB_CLI_VERSION }}
