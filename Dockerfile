@@ -26,7 +26,7 @@ WORKDIR /app
 
 CMD ["pdm"] 
 
-FROM base
+FROM base as gitlab
 
 ARG GITLAB_CLI_VERSION
 
