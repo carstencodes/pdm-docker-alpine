@@ -30,4 +30,4 @@ FROM base
 
 ARG GITLAB_CLI_VERSION
 
-RUN pip install --no-input --no-cache-dir --upgrade gitlab==${GITLAB_CLI_VERSION}
+RUN pip install --no-input --no-cache-dir --upgrade python-gitlab==${GITLAB_CLI_VERSION}
