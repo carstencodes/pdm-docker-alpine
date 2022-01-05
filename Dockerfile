@@ -28,6 +28,6 @@ CMD ["pdm"]
 
 FROM base
 
-ARG USED_GITLAB_CLI_VERSION
+ARG GITLAB_CLI_VERSION
 
-RUN pip install --no-input --no-cache-dir --upgrade gitlab==${USED_GITLAB_CLI_VERSION}
+RUN pip install --no-input --no-cache-dir --upgrade gitlab==${GITLAB_CLI_VERSION}
