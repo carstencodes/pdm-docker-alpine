@@ -52,7 +52,8 @@ jobs:
         if: ${{ steps.changed_files.outputs.any_modified == 'true' }}
         with:
           token: ${{ secrets.AUTO_UPDATE_TOKEN }}
-          add-paths: *.version
+          add-paths: |
+            *.version
           commit-message: "dep: Updating dependencies from other repositories"
           committer: ${{ github.repository_owner }} <${{ github.repository_owner }}@users.noreply.github.com>
           author: ${{ github.repository_owner }} <${{ github.repository_owner }}@users.noreply.github.com>
