@@ -2,6 +2,7 @@ name: Automatic update released versions
 on:
   schedule:
     - cron:  '0 10 * * 6' # Each Saturday at 10 am
+  workflow_dispatch: # Do nothing at all
 jobs:
   get-version:
     runs-on: ubuntu-latest
