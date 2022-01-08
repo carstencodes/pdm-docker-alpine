@@ -21,8 +21,6 @@ jobs:
       - 
         name: Checkout this repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # Get no previous commits
       - 
         name: Fetch latest released version of all repositories
         run: |
@@ -39,10 +37,15 @@ jobs:
       - 
         name: Get all files changed
         id: changed_files
-        uses: tj-actions/changed-files@v13
-        with:
-          files: |
-            *.version
+        run: |
+          modified_version_files=$(git status --porcelain --untracked-files=no *.version | sed 's/^ M //g')
+          echo ::set-output name=modified_files::${modified_version_files}
+          if [ -z "${modified_version_files}" ];
+          then
+            echo ::set-output name=any_modified::true
+          else
+            echo ::set-output name=any_modified::false
+          fi
       - 
         name: Get modifications
         id: modifications
