@@ -41,7 +41,7 @@ jobs:
           modified_version_files=$(git status --porcelain --untracked-files=no *.version | sed 's/^ M //g')
           echo changed_files: ${modified_version_files}
           echo ::set-output name=modified_files::${modified_version_files}
-          if [ -z "${modified_version_files}" ];
+          if [ -n "${modified_version_files}" ];
           then
             echo ::set-output name=any_modified::true
             echo any_modified: true
