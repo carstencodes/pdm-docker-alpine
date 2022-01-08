@@ -4,7 +4,8 @@ on:
     - cron:  '0 10 * * 6' # Each Saturday at 10 am
   workflow_dispatch: # Do nothing at all
 jobs:
-  get-version:
+  auto-update:
+    name: Perform automatic update
     runs-on: ubuntu-latest
     steps:
       - 
@@ -33,6 +34,7 @@ jobs:
             fi
             curl -sL https://api.github.com/repos/$(cat ${dependency}.repo | tr -d [:space:] )/releases/latest | \
               jq -r ".tag_name" | tr -d [:space:] > ${dependency}.version
+            echo Content of ${dependency}.version is now $(cat ${dependency}.version)
           done
       - 
         name: Get all files changed
