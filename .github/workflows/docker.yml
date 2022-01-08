@@ -12,7 +12,6 @@ on:
 jobs:
   docker:
     env:
-      USED_PDM_VERSION: 1.12.1
       USED_GITLAB_CLI_VERSION: 2.10.1
     strategy:
       matrix:
@@ -38,6 +37,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Get PDM Version to use
+        id: pdm_version
+        run: echo ::set-output name=version::$(cat pdm.version | tr -d [:space:] )
       -
         name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
@@ -47,7 +49,7 @@ jobs:
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
-            PDM_VERSION=${{env.USED_PDM_VERSION}}
+            PDM_VERSION=${{steps.pdm_version.outputs.version}}
             GITLAB_CLI_VERSION=${{env.USED_GITLAB_CLI_VERSION}}
       -
         name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
@@ -57,11 +59,11 @@ jobs:
           context: .
           target: single
           push: true
-          tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}
+          tags: carstencodes/pdm-alpine:${{ steps.pdm_version.outputs.version }}-python${{ matrix.python }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
-            PDM_VERSION=${{ env.USED_PDM_VERSION }}
+            PDM_VERSION=${{ steps.pdm_version.outputs.version }}
       -
         name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{ env.USED_GITLAB_CLI_VERSION }}
         uses: docker/build-push-action@v2
@@ -70,9 +72,9 @@ jobs:
           context: .
           target: gitlab
           push: true
-          tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}-gitlab${{ env.USED_GITLAB_CLI_VERSION }}
+          tags: carstencodes/pdm-alpine:${{ steps.pdm_version.outputs.version }}-python${{ matrix.python }}-gitlab${{ env.USED_GITLAB_CLI_VERSION }}
           build-args: |
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
-            PDM_VERSION=${{ env.USED_PDM_VERSION }}
+            PDM_VERSION=${{ steps.pdm_version.outputs.version }}
             GITLAB_CLI_VERSION=${{ env.USED_GITLAB_CLI_VERSION }}
