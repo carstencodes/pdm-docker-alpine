@@ -1,4 +1,4 @@
-name: docker
+name: Container creation
 
 on:
   push:
