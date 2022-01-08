@@ -79,7 +79,7 @@ jobs:
       - 
         name: Close Pull request automatically, if it succeeds
         uses: peter-evans/enable-pull-request-automerge@v1
-        if: ${{ steps.changed_files.outputs.any_modified == 'true' }}
+        if: ${{ steps.changed_files.outputs.any_modified == '' }}
         with:
           token: ${{ secrets.AUTO_UPDATE_TOKEN }}
           pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
