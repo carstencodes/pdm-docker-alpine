@@ -57,7 +57,7 @@ jobs:
           message=
           for file in ${{ steps.changed_files.outputs.modified_files }};
           do
-            message="${message}Updating content of ${file} to $(cat ${file} | tr -d [:space:]). "
+            message="${message}$(echo Updating content of ${file} to $(cat ${file} | tr -d [:space:]).)"
           done
           echo ::set-output name=message::${message}
       - 
