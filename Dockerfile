@@ -19,10 +19,16 @@ RUN apk add --no-cache --virtual .build-deps alpine-sdk python3-dev libffi-dev o
     && pip install --no-input --no-cache-dir --upgrade pdm==${PDM_VERSION} \
     && apk del .build-deps
 
+FROM base as single
+
 # This parts have been taken from the original file at
 # https://github.com/pdm-project/pdm/blob/8e633c6a9b287192b89cc6f01c8ed18d3322c4b1/Dockerfile
 
 WORKDIR /app
+
+ONBUILD COPY pyproject.toml pyproject.toml
+ONBUILD COPY pdm.lock pdm.lock
+ONBUILD RUN pdm sync
 
 CMD ["pdm"] 
 
