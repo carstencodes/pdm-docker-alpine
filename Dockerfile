@@ -37,3 +37,17 @@ FROM base as gitlab
 ARG GITLAB_CLI_VERSION
 
 RUN pip install --no-input --no-cache-dir --upgrade python-gitlab==${GITLAB_CLI_VERSION}
+
+FROM base as github
+
+ARG GITHUB_CLI_VERSION
+ARG TARGET_ARCH=amd64
+
+RUN cd $(mktemp -d) \
+    && export _TMP_DIR=$PWD \
+    && wget -O gh.tgz https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_${TARGET_ARCH}.tar.gz \
+    && tar -zxf gh.tgz gh_${GITHUB_CLI_VERSION}_linux_${TARGET_ARCH}/bin/gh -C /usr/bin --strip-components=2 \
+    && chmod a+x /usr/bin/gh \
+    && cd - >/dev/null \
+    && rm -rf ${_TMP_DIR} \
+    && export _TMP_DIR=
