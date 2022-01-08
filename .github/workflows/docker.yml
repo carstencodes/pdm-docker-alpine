@@ -19,6 +19,7 @@ jobs:
           - python: 3.9
             alpine: 3.14
     runs-on: ubuntu-latest
+    name: Create docker containers
     steps:
       -
         name: Checkout
