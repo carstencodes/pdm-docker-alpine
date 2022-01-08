@@ -57,6 +57,9 @@ jobs:
             echo Updating content of ${file} to $(cat ${file} | tr -d [:space:]). >> output.txt
           done
           message=$(cat output.txt)
+          message="${message//'%'/'%25'}"
+          message="${message//$'\n'/'%0A'}"
+          message="${message//$'\r'/'%0D'}"
           rm output.txt
           echo ::set-output name=message::${message}
       - 
