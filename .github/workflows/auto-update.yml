@@ -9,8 +9,10 @@ jobs:
     steps:
       - 
         name: Ensure PAT is set
+        env:
+          CI_CD_ACTION_AUTO_UPDATE_TOKEN: ${{ secrets.AUTO_UPDATE_TOKEN }}
         run: |
-          if [ '${{ secrets.AUTO_UPDATE_TOKEN }}' == '' ];
+          if [ -z "${CI_CD_ACTION_AUTO_UPDATE_TOKEN}" ];
           then
             echo "Set repository secret AUTO_UPDATE_TOKEN to a non-empty value." >&2
             exit 1
