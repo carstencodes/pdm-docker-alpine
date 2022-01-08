@@ -1,0 +1,6 @@
+.github/*
+*.repo
+*.version
+LICENSE
+*.md
+dependencies.txt
