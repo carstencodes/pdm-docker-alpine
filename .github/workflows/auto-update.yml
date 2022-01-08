@@ -51,11 +51,13 @@ jobs:
         id: modifications
         if: ${{ steps.changed_files.outputs.any_modified == 'true' }}
         run: |
-          message=
+          touch output.txt
           for file in ${{ steps.changed_files.outputs.modified_files }};
           do
-            message="${message}$(echo Updating content of ${file} to $(cat ${file} | tr -d [:space:]).)"
+            echo Updating content of ${file} to $(cat ${file} | tr -d [:space:]). >> output.txt
           done
+          message=$(cat output.txt)
+          rm output.txt
           echo ::set-output name=message::${message}
       - 
         name: Commit and create Pull request
