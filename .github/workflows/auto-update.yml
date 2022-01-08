@@ -22,7 +22,7 @@ jobs:
         name: Checkout this repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 2 # Get previous commits
+          fetch-depth: 0 # Get no previous commits
       - 
         name: Fetch latest released version of all repositories
         run: |
