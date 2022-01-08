@@ -88,22 +88,24 @@ jobs:
           pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
           merge-method: rebase
       - 
-        name: Gotify Notification
-        uses: eikendev/gotify-action@master
+        name: Gotify Notification on success
         if: success()
-        with:
-          gotify_api_base: '${{ secrets.GOTIFY_API_BASE }}'
-          gotify_app_token: '${{ secrets.GOTIFY_APP_TOKEN }}'
-          notification_priority: 6
-          notification_title: Update of ${{ github.repository }} succeeded
-          notification_message: ${{ steps.modifications.outputs.message }}
+        env:
+          GOTIFY_API_BASE: ${{ secrets.GOTIFY_API_BASE }}
+          GOTIFY_APP_TOKEN: ${{ secrets.GOTIFY_APP_TOKEN }}
+        run: |
+          curl -f -S "https://${GOTIFY_API_BASE}/message?token=${GOTIFY_APP_TOKEN}" \
+               -F "title=Update of ${{ github.repository }} succeeded" \
+               -F "message=${{ steps.modifications.outputs.message }}" \
+               -F "priority=6"
       - 
         name: Gotify Notification on error
-        uses: eikendev/gotify-action@master
         if: failure()
-        with:
-          gotify_api_base: '${{ secrets.GOTIFY_API_BASE }}'
-          gotify_app_token: '${{ secrets.GOTIFY_APP_TOKEN }}'
-          notification_priority: 9
-          notification_title: Update of ${{ github.repository }} failed
-          notification_message: See build log of job ${{ github.job_id }} at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          GOTIFY_API_BASE: ${{ secrets.GOTIFY_API_BASE }}
+          GOTIFY_APP_TOKEN: ${{ secrets.GOTIFY_APP_TOKEN }}
+        run: |
+          curl -f -S "https://${GOTIFY_API_BASE}/message?token=${GOTIFY_APP_TOKEN}" \
+               -F "title=Update of ${{ github.repository }} succeeded" \
+               -F "message=${{ steps.modifications.outputs.message }}" \
+               -F "priority=9"
