@@ -35,12 +35,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Get PDM version to use
+      - 
+        name: Get PDM version to use
         id: pdm_version
         run: echo ::set-output name=version::$(cat pdm.version | tr -d [:space:] )
-      - name: Get python-gitlab version to use
+      - 
+        name: Get python-gitlab version to use
         id: gitlab_version
         run: echo ::set-output name=version::$(cat gitlab.version | tr -d [:space:] )
+      - 
+        name: Get github-cli version to use
+        id: github_version
+        run: echo ::set-output name=version::$(cat github.version | tr -d [:space:] )
       -
         name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v2
@@ -51,7 +57,8 @@ jobs:
             PYTHON_VERSION=${{ matrix.python }}
             ALPINE_VERSION=${{ matrix.alpine }}
             PDM_VERSION=${{ steps.pdm_version.outputs.version }}
-            GITLAB_CLI_VERSION=${{steps.gitlab_version.outputs.version}}
+            GITLAB_CLI_VERSION=${{ steps.gitlab_version.outputs.version }}
+            GITHUB_CLI_VERSION=${{ steps.github_version.outputs.version }}
       -
         name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
         uses: docker/build-push-action@v2
@@ -79,3 +86,17 @@ jobs:
             ALPINE_VERSION=${{ matrix.alpine }}
             PDM_VERSION=${{ steps.pdm_version.outputs.version }}
             GITLAB_CLI_VERSION=${{ steps.gitlab_version.outputs.version }}
+      -
+        name: Build and push github image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / github ${{ steps.github_version.outputs.version }}
+        uses: docker/build-push-action@v2
+        if: ${{ github.ref_name == 'main' }}   
+        with:
+          context: .
+          target: github
+          push: true
+          tags: carstencodes/pdm-alpine:${{ steps.pdm_version.outputs.version }}-python${{ matrix.python }}-github${{ steps.github_version.outputs.version }}
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python }}
+            ALPINE_VERSION=${{ matrix.alpine }}
+            PDM_VERSION=${{ steps.pdm_version.outputs.version }}
+            GITHUB_CLI_VERSION=${{ steps.github_version.outputs.version }}
