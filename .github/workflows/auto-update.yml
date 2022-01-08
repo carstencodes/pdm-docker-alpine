@@ -32,7 +32,8 @@ jobs:
         id: changed_files
         uses: tj-actions/changed-files@v13
         with:
-          files: *.version
+          files: |
+            *.version
       - 
         name: Get modifications
         id: modifications
