@@ -1,0 +1,91 @@
+name: Automatic update released versions
+on:
+  schedule:
+    - cron:  '0 10 * * 6' # Each Saturday at 10 am
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Ensure PAT is set
+        if: ${{ secrets.AUTO_UPDATE_TOKEN == '' }}
+        run: |
+          echo "Set repository secret AUTO_UPDATE_TOKEN to a non-empty value." >&2
+          exit 1
+      - 
+        name: Checkout this repository
+        uses: actions/checkout@v2
+      - 
+        name: Fetch latest released version of all repositories
+        run: |
+          for dependency in $(cat dependencies.txt); do
+            if [ ! -f ${dependency}.repo ] || [ ! -f ${dependency}.version ];
+            then
+              echo "Cannot resolve ${dependency} version and repository information file." >&2
+              exit 1
+            fi
+            curl -sL https://api.github.com/repos/$(cat ${dependency}.repo | tr -d [:space:] )/releases/latest | \
+              jq -r ".tag_name" | tr -d [:space:] > ${dependency}.version
+          done
+      - 
+        name: Get all files changed
+        id: changed_files
+        uses: tj-actions/changed-files@v13
+        with:
+          files: *.version
+      - 
+        name: Get modifications
+        id: modifications
+        if: ${{ steps.changed_files.outputs.any_modified == 'true' }}
+        run: |
+          message=
+          for file in ${{ steps.changed_files.outputs.modified_files }};
+          do
+            message="${message}Updating content of ${file} to $(cat ${file} | tr -d [:space:]). "
+          done
+          echo ::set-output name=message::${message}
+      - 
+        name: Commit and create Pull request
+        id: create-pr
+        uses: peter-evans/create-pull-request@v3
+        if: ${{ steps.changed_files.outputs.any_modified == 'true' }}
+        with:
+          token: ${{ secrets.AUTO_UPDATE_TOKEN }}
+          add-paths: *.version
+          commit-message: "dep: Updating dependencies from other repositories"
+          committer: ${{ github.repository_owner }} <${{ github.repository_owner }}@users.noreply.github.com>
+          author: ${{ github.repository_owner }} <${{ github.repository_owner }}@users.noreply.github.com>
+          signoff: false
+          branch: auto-update/dependencies
+          branch-suffix: timestamp
+          delete-branch: true
+          title: "Automatic update of dependent repositories"
+          body: ${{ steps.modifications.outputs.message }}
+          assignees: ${{ github.repository_owner }}
+      - 
+        name: Close Pull request automatically, if it succeeds
+        uses: peter-evans/enable-pull-request-automerge@v1
+        with:
+          token: ${{ secrets.AUTO_UPDATE_TOKEN }}
+          pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
+          merge-method: rebase
+      - 
+        name: Gotify Notification
+        uses: eikendev/gotify-action@master
+        if: ${{ secrets.GOTIFY_API_BASE != '' }} && ${{ secrets.GOTIFY_APP_TOKEN != '' }} && success()
+        with:
+          gotify_api_base: '${{ secrets.GOTIFY_API_BASE }}'
+          gotify_app_token: '${{ secrets.GOTIFY_APP_TOKEN }}'
+          notification_priority: 6
+          notification_title: Update of ${{ github.repository }} succeeded
+          notification_message: ${{ steps.modifications.outputs.message }}
+      - 
+        name: Gotify Notification on error
+        uses: eikendev/gotify-action@master
+        if: ${{ secrets.GOTIFY_API_BASE != '' }} && ${{ secrets.GOTIFY_APP_TOKEN != '' }} && failure()
+        with:
+          gotify_api_base: '${{ secrets.GOTIFY_API_BASE }}'
+          gotify_app_token: '${{ secrets.GOTIFY_APP_TOKEN }}'
+          notification_priority: 9
+          notification_title: Update of ${{ github.repository }} failed
+          notification_message: See build log of job ${{ github.job_id }} at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
