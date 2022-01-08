@@ -31,7 +31,7 @@ jobs:
               exit 1
             fi
             curl -sL https://api.github.com/repos/$(cat ${dependency}.repo | tr -d [:space:] )/releases/latest | \
-              jq -r ".tag_name" | tr -d [:space:] > ${dependency}.version
+              jq -r ".tag_name" | tr -d [:space:] | sed s/v//g > ${dependency}.version
             echo Content of ${dependency}.version is now $(cat ${dependency}.version)
           done
       - 
