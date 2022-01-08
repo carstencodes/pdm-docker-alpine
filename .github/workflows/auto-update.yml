@@ -79,7 +79,7 @@ jobs:
       - 
         name: Gotify Notification
         uses: eikendev/gotify-action@master
-        if: ${{ secrets.GOTIFY_API_BASE != '' }} && ${{ secrets.GOTIFY_APP_TOKEN != '' }} && success()
+        if: success()
         with:
           gotify_api_base: '${{ secrets.GOTIFY_API_BASE }}'
           gotify_app_token: '${{ secrets.GOTIFY_APP_TOKEN }}'
@@ -89,7 +89,7 @@ jobs:
       - 
         name: Gotify Notification on error
         uses: eikendev/gotify-action@master
-        if: ${{ secrets.GOTIFY_API_BASE != '' }} && ${{ secrets.GOTIFY_APP_TOKEN != '' }} && failure()
+        if: failure()
         with:
           gotify_api_base: '${{ secrets.GOTIFY_API_BASE }}'
           gotify_app_token: '${{ secrets.GOTIFY_APP_TOKEN }}'
