@@ -55,7 +55,7 @@ jobs:
         if: ${{ github.ref_name == 'main' }}
         with:
           context: .
-          target: base
+          target: single
           push: true
           tags: carstencodes/pdm-alpine:${{ env.USED_PDM_VERSION }}-python${{ matrix.python }}
           build-args: |
