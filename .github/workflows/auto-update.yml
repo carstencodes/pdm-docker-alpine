@@ -102,7 +102,7 @@ jobs:
                -F "priority=6"
       - 
         name: Gotify Notification on success without any update
-        if: ${{ success() && steps.changed_files.outputs.any_modified == 'true' }}
+        if: ${{ success() && steps.changed_files.outputs.any_modified == 'false' }}
         env:
           GOTIFY_API_BASE: ${{ secrets.GOTIFY_API_BASE }}
           GOTIFY_APP_TOKEN: ${{ secrets.GOTIFY_APP_TOKEN }}
