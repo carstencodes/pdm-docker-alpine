@@ -14,8 +14,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - python: "3.8"
-            alpine: "3.13"
           - python: "3.9"
             alpine: "3.14"
           - python: "3.10"
