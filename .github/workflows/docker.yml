@@ -39,15 +39,15 @@ jobs:
       - 
         name: Get PDM version to use
         id: pdm_version
-        run: echo ::set-output name=version::$(cat pdm.version | tr -d [:space:] )
+        run: echo ::set-output name=version::$(cat pdm.version | grep -v '#' | tr -d [:space:] )
       - 
         name: Get python-gitlab version to use
         id: gitlab_version
-        run: echo ::set-output name=version::$(cat gitlab.version | tr -d [:space:] )
+        run: echo ::set-output name=version::$(cat gitlab.version | grep -v '#' | tr -d [:space:] )
       - 
         name: Get github-cli version to use
         id: github_version
-        run: echo ::set-output name=version::$(cat github.version | tr -d [:space:] )
+        run: echo ::set-output name=version::$(cat github.version | grep -v '#' | tr -d [:space:] )
       -
         name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
         uses: docker/build-push-action@v6
