@@ -14,10 +14,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - python: "3.10"
-            alpine: "3.16"
-          - python: "3.11"
-            alpine: "3.18"
+          - python: "3.12"
+            alpine: "3.23"
+          - python: "3.12"
+            alpine: "3.22"
+          - python: "3.12"
+            alpine: "3.21"
     runs-on: ubuntu-latest
     name: Create docker containers
     steps:
