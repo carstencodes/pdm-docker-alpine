@@ -1,1 +1,2 @@
+# renovate: datasource=github-releases depName=gitlab-cli packageName=python-gitlab/python-gitlab
 7.1.0
