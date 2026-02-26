@@ -13,7 +13,7 @@
         "pdm.version",
       ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)\\s+(?<currentValue>.+?)\\s*"
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)\\s+(?<currentValue>?)\\s*"
       ]  
     }
   ]
