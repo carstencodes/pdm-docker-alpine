@@ -1,2 +1,2 @@
 # renovate: datasource=github-releases depName=PDM packageName=pdm-project/pdm
-2.26.3
+2.26.6
