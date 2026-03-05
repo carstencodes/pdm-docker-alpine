@@ -52,7 +52,7 @@ jobs:
         run: echo ::set-output name=version::$(cat github.version | grep -v '#' | tr -d [:space:] )
       -
         name: Build all images with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} without pushing
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: false
@@ -64,7 +64,7 @@ jobs:
             GITHUB_CLI_VERSION=${{ steps.github_version.outputs.version }}
       -
         name: Build and push base image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         if: ${{ github.ref_name == 'main' }}
         with:
           context: .
@@ -77,7 +77,7 @@ jobs:
             PDM_VERSION=${{ steps.pdm_version.outputs.version }}
       -
         name: Build and push gitlab image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / gitlab ${{ steps.gitlab_version.outputs.version }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         if: ${{ github.ref_name == 'main' }}   
         with:
           context: .
@@ -91,7 +91,7 @@ jobs:
             GITLAB_CLI_VERSION=${{ steps.gitlab_version.outputs.version }}
       -
         name: Build and push github image with python ${{ matrix.python }} / alpine ${{ matrix.alpine }} / github ${{ steps.github_version.outputs.version }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         if: ${{ github.ref_name == 'main' }}   
         with:
           context: .
