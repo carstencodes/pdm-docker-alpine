@@ -1,2 +1,2 @@
 # renovate: datasource=github-releases depName=github-cli packageName=cli/cli
-2.90.0
+2.91.0
